@@ -1,20 +1,40 @@
 console.log("script.js loaded");
 
-let endpoint = "https://api.giphy.com/v1/gifs/search?api_key=&q=where%27s+your+proof&limit=25&offset=0&rating=g&lang=en&bundle=messaging_non_clips";
+// api endpoint for fetching gifs from Giphy
+let endpoint = "https://api.giphy.com/v1/gifs/search?api_key=hbq28BbFCa1daKbbVzfq1ds0FL9dxAWn&q=ironman&limit=50&offset=0&rating=g&lang=en&bundle=messaging_non_clips";
 
+// array for the gifs
 let images = [];
 
-let data = fetch("https://api.giphy.com/v1/gifs/search?api_key=&q=where%27s+your+proof&limit=25&offset=0&rating=g&lang=en&bundle=messaging_non_clips");
-console.log(data);
+// gif container and button from the html
+const gifContainer = document.querySelector("#gif-container");
+const button = document.querySelector("#fetch-gif-btn");
 
+// function that fetches and displays the gifs from giphy
 async function getGif() {
-    const response = await fetch("https://api.giphy.com/v1/gifs/search?api_key=&q=where%27s+your+proof&limit=25&offset=0&rating=g&lang=en&bundle=messaging_non_clips")
+    // fetch data from giphy
+    const response = await fetch(endpoint);
     const data = await response.json();
-    const fact = data.facts[0];
 
-    // update the dom with gif
-    const output = document.getElementById("gifOutput");
-    output.textContent = fact;
+    // clear previous gifs
+    images = [];
+    gifContainer.innerHTML = "";
+
+    // loop through the gifs and store their original image URLs in the images array
+    data.data.forEach(function(gif) {
+        images.push(gif.images.original.url);
+    });
+
+    // preview the images url's in the console
+    console.log(images);
+
+    // display the gifs on the page
+    images.forEach(function(imageUrl) {
+        gifContainer.innerHTML += `<img src="${imageUrl}" class="col-3 mb-3">`;
+    });
 }
 
-getGif()
+// fetch gifs when the button is clicked
+button.addEventListener("click", function () { 
+  getGif();
+});
